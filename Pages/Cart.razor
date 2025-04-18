@@ -1,78 +1,134 @@
 @page "/cart"
+@using front__wasm.Models
+@using System.Collections.Generic
+@using front__wasm.Shared
 
 <div class="container mx-auto px-4 py-12">
   <h1 class="text-4xl font-bold mb-8 text-center">Carrinho de Compras</h1>
 
-  <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
-    <div class="flex items-center justify-between pb-4 border-b border-gray-200 mb-4 font-bold">
-      <div class="w-2/5">Serviço</div>
-      <div class="w-1/5 text-center">Quantidade</div>
-      <div class="w-1/5 text-center">Preço</div>
-      <div class="w-1/5 text-center">Total</div>
-      <div class="w-1/12"></div>
+  <!-- New flex container for side-by-side layout -->
+  <div class="flex flex-col md:flex-row gap-6">
+    <!-- Cart items section - adjusted width -->
+    <div class="w-full md:w-2/3">
+      <div class="bg-white rounded-lg shadow-lg p-6 mb-8 md:mb-0">
+        <div class="flex items-center justify-between pb-4 border-b border-gray-200 mb-4 font-bold">
+          <div class="w-2/5">Serviço</div>
+          <div class="w-1/5 text-center">Quantidade</div>
+          <div class="w-1/5 text-center">Preço</div>
+          <div class="w-1/5 text-center">Total</div>
+          <div class="w-1/12"></div>
+        </div>
+
+        @if (cartItems == null || !cartItems.Any())
+        {
+          <p class="text-center py-8">Seu carrinho está vazio.</p>
+        }
+        else
+        {
+          @foreach (var item in cartItems)
+          {
+            <CartItem 
+              ImageUrl="@item.ImageUrl" 
+              ImageAlt="@item.ImageAlt" 
+              Title="@item.Title" 
+              Description="@item.Description" 
+              UnitPrice="@item.UnitPrice" 
+              Quantity="@item.Quantity" 
+              OnQuantityChanged="@(qty => UpdateQuantity(item, qty))" 
+              OnRemoveClicked="@(() => RemoveItem(item))" />
+          }
+        }
+      </div>
     </div>
 
-    <!-- Exemplo de item no carrinho -->
-    <div class="flex items-center justify-between py-4 border-b border-gray-200">
-      <div class="w-2/5 flex items-center">
-        <img
-          src="https://via.placeholder.com/80?text=Gold"
-          alt="Gold Service"
-          class="w-16 h-16 object-cover mr-4" />
-        <div>
-          <h3 class="font-bold text-lg">Gold Service</h3>
-          <p class="text-gray-600">10.000 Gold</p>
-        </div>
-      </div>
-      <div class="w-1/5 text-center">
-        <div class="flex items-center justify-center">
-          <button class="bg-gray-200 px-3 py-1 rounded-l">-</button>
-          <span class="bg-gray-100 px-4 py-1">1</span>
-          <button class="bg-gray-200 px-3 py-1 rounded-r">+</button>
-        </div>
-      </div>
-      <div class="w-1/5 text-center">R$ 19,90</div>
-      <div class="w-1/5 text-center font-bold">R$ 19,90</div>
-      <div class="w-1/12 text-center">
-        <button class="text-red-500 hover:text-red-700">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-          </svg>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div class="flex flex-col md:flex-row justify-end">
+    <!-- Order summary section using the new component -->
     <div class="w-full md:w-1/3">
-      <div class="bg-white rounded-lg shadow-lg p-6">
-        <h2 class="text-2xl font-bold mb-4">Resumo</h2>
-        <div class="flex justify-between mb-2">
-          <span>Subtotal</span>
-          <span>R$ 19,90</span>
-        </div>
-        <div class="flex justify-between mb-4 pb-4 border-b border-gray-200">
-          <span>Taxa de serviço</span>
-          <span>R$ 2,00</span>
-        </div>
-        <div class="flex justify-between font-bold text-lg mb-6">
-          <span>Total</span>
-          <span>R$ 21,90</span>
-        </div>
-        <button
-          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300">
-          Finalizar Compra
-        </button>
-      </div>
+      <OrderSummary 
+        Subtotal="@CalculateSubtotal()" 
+        ServiceFee="2.00m" 
+        OnCheckoutClicked="@HandleCheckout" />
     </div>
   </div>
 </div>
+
+@code {
+    private List<CartItemModel> cartItems = new List<CartItemModel>();
+
+    protected override void OnInitialized()
+    {
+        //Dado mockado apenas para teste, quando comecarem a colocar coisa no carrinho isso daqui saira
+        cartItems.Add(new CartItemModel 
+        { 
+            ImageUrl = "https://via.placeholder.com/80?text=Gold", 
+            ImageAlt = "Gold Service", 
+            Title = "Gold Service", 
+            Description = "10.000 Gold", 
+            UnitPrice = "R$ 19,90", 
+            Quantity = 1 
+        });
+        cartItems.Add(new CartItemModel 
+        { 
+            ImageUrl = "https://via.placeholder.com/80?text=Gold", 
+            ImageAlt = "Gold Service", 
+            Title = "Gold Service", 
+            Description = "10.000 Gold", 
+            UnitPrice = "R$ 19,90", 
+            Quantity = 1 
+        });
+        cartItems.Add(new CartItemModel 
+        { 
+            ImageUrl = "https://via.placeholder.com/80?text=Gold", 
+            ImageAlt = "Gold Service", 
+            Title = "Gold Service", 
+            Description = "10.000 Gold", 
+            UnitPrice = "R$ 19,90", 
+            Quantity = 1 
+        });
+    }
+
+    private void UpdateQuantity(CartItemModel item, int newQuantity)
+    {
+        item.Quantity = newQuantity;
+    }
+
+    private void RemoveItem(CartItemModel item)
+    {
+        cartItems.Remove(item);
+    }
+
+    private decimal CalculateSubtotal()
+    {
+        decimal subtotal = 0;
+        foreach (var item in cartItems)
+        {
+            string normalizedPrice = item.UnitPrice
+                .Replace("R$", "")
+                .Trim();
+            
+            if (decimal.TryParse(normalizedPrice, 
+                                System.Globalization.NumberStyles.Currency, 
+                                new System.Globalization.CultureInfo("pt-BR"), 
+                                out decimal price))
+            {
+                subtotal += price * item.Quantity;
+            }
+        }
+        return subtotal;
+    }
+
+    private async Task HandleCheckout()
+    {
+        // Implement checkout functionality here
+        Console.WriteLine("Checkout clicked");
+    }
+
+    public class CartItemModel
+    {
+        public string ImageUrl { get; set; } = "";
+        public string ImageAlt { get; set; } = "";
+        public string Title { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string UnitPrice { get; set; } = "";
+        public int Quantity { get; set; } = 1;
+    }
+}

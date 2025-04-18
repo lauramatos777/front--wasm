@@ -1,0 +1,51 @@
+@code {
+    [Parameter]
+    public string Title { get; set; } = "Confirmação";
+
+    [Parameter]
+    public string Message { get; set; } = "Tem certeza que deseja remover este item?";
+
+    [Parameter]
+    public EventCallback OnConfirm { get; set; }
+
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    [Parameter]
+    public bool IsVisible { get; set; }
+
+    private async Task HandleConfirm()
+    {
+        await OnConfirm.InvokeAsync();
+    }
+
+    private async Task HandleCancel()
+    {
+        await OnCancel.InvokeAsync();
+    }
+}
+
+@if (IsVisible)
+{
+    <div class="fixed inset-0 z-50 flex items-center justify-center" @onclick="HandleCancel">
+        <div class="absolute inset-0 backdrop-blur-sm bg-gray-700/30"></div>
+        
+        <div class="relative bg-white rounded-lg p-8 w-full max-w-lg shadow-2xl border border-gray-200 z-10"
+             @onclick:stopPropagation>
+            <h3 class="text-xl font-bold mb-3">@Title</h3>
+            <p class="mb-6 text-gray-700">@Message</p>
+            <div class="flex justify-end space-x-3">
+                <button 
+                    @onclick="HandleCancel" 
+                    class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition cursor-pointer">
+                    Cancelar
+                </button>
+                <button 
+                    @onclick="HandleConfirm" 
+                    class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition cursor-pointer">
+                    Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+}

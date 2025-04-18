@@ -1,0 +1,49 @@
+@code {
+    [Parameter]
+    public decimal Subtotal { get; set; } = 0;
+
+    [Parameter]
+    public decimal ServiceFee { get; set; } = 2.00m;
+
+    [Parameter]
+    public EventCallback OnCheckoutClicked { get; set; }
+
+    private decimal Total => Subtotal + ServiceFee;
+    private bool showCheckoutConfirmation = false;
+
+    private void HandleCheckoutClick()
+    {
+        showCheckoutConfirmation = true;
+    }
+
+    private async Task HandleCheckoutConfirmed()
+    {
+        showCheckoutConfirmation = false;
+        await OnCheckoutClicked.InvokeAsync();
+    }
+}
+
+<div class="bg-white rounded-lg shadow-lg p-6">
+    <h2 class="text-2xl font-bold mb-4">Resumo</h2>
+    <div class="flex justify-between mb-2">
+        <span>Subtotal</span>
+        <span>R$ @(Subtotal.ToString("F2").Replace(".", ","))</span>
+    </div>
+    <div class="flex justify-between mb-4 pb-4 border-b border-gray-200">
+        <span>Taxa de serviço</span>
+        <span>R$ @(ServiceFee.ToString("F2").Replace(".", ","))</span>
+    </div>
+    <div class="flex justify-between font-bold text-lg mb-6">
+        <span>Total</span>
+        <span>R$ @(Total.ToString("F2").Replace(".", ","))</span>
+    </div>
+    <button @onclick="HandleCheckoutClick" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 cursor-pointer">
+        Finalizar Compra
+    </button>
+
+    <CheckoutConfirmationDialog 
+        IsVisible="@showCheckoutConfirmation"
+        Title="Compra Finalizada"
+        Message="Sua compra foi realizada com sucesso! Obrigado por escolher nossos serviços."
+        OnClose="HandleCheckoutConfirmed" />
+</div>

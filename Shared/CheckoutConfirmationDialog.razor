@@ -1,0 +1,65 @@
+@code {
+    [Parameter]
+    public string Title { get; set; } = "Sucesso!";
+
+    [Parameter]
+    public string Message { get; set; } = "Sua compra foi finalizada com sucesso!";
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    [Parameter]
+    public bool IsVisible { get; set; }
+
+    private bool isRendered = false;
+    private string dialogClasses => IsVisible 
+        ? "transform scale-100 opacity-100" 
+        : "transform scale-95 opacity-0";
+    private string backdropClasses => IsVisible 
+        ? "opacity-100" 
+        : "opacity-0";
+
+    protected override void OnParametersSet()
+    {
+        if (IsVisible && !isRendered)
+        {
+            isRendered = true;
+        }
+    }
+
+    private async Task HandleClose()
+    {
+        await OnClose.InvokeAsync();
+    }
+}
+
+@if (isRendered)
+{
+    <div class="fixed inset-0 z-50 flex items-center justify-center" @onclick="HandleClose">
+        <!-- Backdrop with Tailwind transitions -->
+        <div class="absolute inset-0 backdrop-blur-sm bg-gray-700/30 transition-opacity duration-300 ease-out @backdropClasses"></div>
+        
+        <!-- Dialog with Tailwind transitions -->
+        <div class="relative bg-white rounded-lg p-8 w-full max-w-lg shadow-2xl border border-gray-200 z-10
+                   transition-all duration-300 ease-out @dialogClasses"
+             @onclick:stopPropagation>
+            <div class="flex flex-col items-center text-center">
+                <!-- Green checkmark icon with Tailwind animation -->
+                <div class="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mb-4 animate-pulse">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+                
+                <h3 class="text-xl font-bold mb-3">@Title</h3>
+                <p class="mb-6 text-gray-700">@Message</p>
+                
+                <button 
+                    @onclick="HandleClose" 
+                    class="px-8 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition cursor-pointer">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+}
