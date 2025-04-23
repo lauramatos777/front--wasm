@@ -1,0 +1,37 @@
+{
+  "title": "Mythic+ Dungeons",
+  "description": "Domine as masmorras mais desafiadoras com nossa equipe experiente. Garantimos completar suas dungeons com chaves altas rapidamente.",
+  "featuresTitle": "O que nosso serviço de Mythic+ oferece?",
+  "features": [
+    "Runs rápidas com garantia de conclusão no tempo",
+    "Equipe composta por jogadores Gladiator/Elite com anos de experiência",
+    "Loot garantido direcionado para seu personagem",
+    "Streams privadas para você acompanhar a run"
+  ],
+  "detailsTitle": "Como funciona?",
+  "details": [
+    "1. Escolha o nível da chave e a quantidade de runs",
+    "2. Selecione as masmorras específicas ou deixe-nos escolher as mais rápidas",
+    "3. Informe detalhes do seu personagem e preferências de loot",
+    "4. Realize o pagamento",
+    "5. Agende com nossa equipe e receba seu boost!"
+  ],
+  "packagesTitle": "Escolha seu pacote",
+  "packages": [
+    {
+      "name": "Mythic+10 (Única)",
+      "price": "R$ 49,90",
+      "isPopular": false
+    },
+    {
+      "name": "Pacote 4x Mythic+15",
+      "price": "R$ 189,90",
+      "isPopular": true
+    },
+    {
+      "name": "Mythic+20 (Única)",
+      "price": "R$ 99,90",
+      "isPopular": false
+    }
+  ]
+}

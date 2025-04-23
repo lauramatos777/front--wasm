@@ -1,0 +1,39 @@
+{
+  "title": "Serviços de PvP",
+  "description": "Alcance ratings elevados, conquiste títulos exclusivos e obtenha equipamentos PvP de elite com nossos serviços profissionais de arena e battleground.",
+  "featuresTitle": "Eleve seu jogo PvP com nossos serviços",
+  "features": [
+    "Jogadores Gladiadores e R1 em nosso time",
+    "Disponível para 2v2, 3v3 e RBGs",
+    "Conquistas como \"Gladiador\" e \"Elite\" garantidas",
+    "Opções para jogabilidade própria (coaching) ou pilotagem"
+  ],
+  "detailsTitle": "Nossos diferenciais",
+  "details": [
+    "Oferecemos gravações das partidas para você estudar e aprender com os melhores jogadores. Também disponibilizamos sessões de coaching para melhorar suas habilidades PvP.",
+    "Todos os boosts são realizados manualmente, sem uso de programas ou trapaças, garantindo total segurança para sua conta."
+  ],
+  "packagesTitle": "Escolha seu pacote",
+  "packages": [
+    {
+      "name": "1800 Rating (2v2 ou 3v3)",
+      "price": "R$ 149,90",
+      "isPopular": false
+    },
+    {
+      "name": "2100 Rating (Elite)",
+      "price": "R$ 299,90",
+      "isPopular": true
+    },
+    {
+      "name": "2400+ (Gladiador)",
+      "price": "R$ 499,90",
+      "isPopular": false
+    },
+    {
+      "name": "RBG 1800+ Rating",
+      "price": "R$ 249,90",
+      "isPopular": false
+    }
+  ]
+}

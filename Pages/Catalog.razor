@@ -3,36 +3,38 @@
 @using front__wasm.Services
 @inject CatalogService CatalogService
 
-<div class="container mx-auto px-4 py-12">
-  <h1 class="text-4xl font-bold mb-8 text-center">Catálogo de Serviços</h1>
+<div class="bg-gradient-to-b from-purple-900 to-blue-900 min-h-screen text-white">
+  <div class="container mx-auto px-4 py-12">
+    <h1 class="text-4xl font-bold mb-8 text-center">Catálogo de Serviços</h1>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-    @if (services == null)
-    {
-      <p class="text-center col-span-3">Carregando serviços...</p>
-    }
-    else if (!services.Any())
-    {
-      <p class="text-center col-span-3">Nenhum serviço disponível no momento.</p>
-    }
-    else
-    {
-      @foreach (var service in services)
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      @if (services == null)
       {
-        <ServiceCard 
-          ImageUrl="@service.ImageUrl"
-          ImageAlt="@service.ImageAlt"
-          Title="@service.Title"
-          Description="@service.Description"
-          Price="@service.Price"
-          DetailsUrl="@service.DetailsUrl" />
+        <p class="text-center col-span-3">Carregando serviços...</p>
       }
-    }
+      else if (!services.Any())
+      {
+        <p class="text-center col-span-3">Nenhum serviço disponível no momento.</p>
+      }
+      else
+      {
+        @foreach (var service in services)
+        {
+          <ServiceCard 
+            ImageUrl="@service.ImageUrl"
+            ImageAlt="@service.ImageAlt"
+            Title="@service.Title"
+            Description="@service.Description"
+            Price="@service.Price"
+            DetailsUrl="@service.DetailsUrl" />
+        }
+      }
+    </div>
   </div>
 </div>
 
 @code {
-  private IEnumerable<Service> services = new List<Service>();
+  private IEnumerable<CatalogServiceDetails> services = new List<CatalogServiceDetails>();
 
   protected override async Task OnInitializedAsync()
   {

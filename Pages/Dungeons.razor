@@ -1,38 +1,166 @@
 @page "/dungeons"
+@using front__wasm.Models
+@using front__wasm.Services
+@inject DungeonService DungeonService
+@inject CartService CartService
+@inject NavigationManager NavigationManager
+@using front__wasm.Shared
+@inject CatalogService CatalogService
 
-<ServiceTemplate 
-  Title="Mythic+ Dungeons" 
-  Description="Domine as masmorras mais desafiadoras com nossa equipe experiente. Garantimos completar suas dungeons com chaves altas rapidamente."
-  GradientClasses="from-blue-600 to-indigo-800"
-  IconColor="text-blue-500"
-  HoverBorderColor="border-blue-500">
-  <LeftContent>
-    <h2 class="text-3xl font-bold mb-6">O que nosso serviço de Mythic+ oferece?</h2>
-    <ul class="space-y-4">
-      <CheckListItem Text="Runs rápidas com garantia de conclusão no tempo" IconColor="text-blue-500" />
-      <CheckListItem Text="Equipe composta por jogadores Gladiator/Elite com anos de experiência" IconColor="text-blue-500" />
-      <CheckListItem Text="Loot garantido direcionado para seu personagem" IconColor="text-blue-500" />
-      <CheckListItem Text="Streams privadas para você acompanhar a run" IconColor="text-blue-500" />
-    </ul>
+@if (details == null)
+{
+    <p class="text-center text-white py-10">Carregando detalhes do serviço...</p>
+}
+else
+{
+    <ServiceTemplate 
+      Title="@details.Title" 
+      Description="@details.Description"
+      GradientClasses="@gradientClasses"
+      IconColor="@iconColor"
+      HoverBorderColor="@hoverBorderColor">
+      <ServiceFeatures>
+        <h2 class="text-3xl font-bold mb-6">@details.FeaturesTitle</h2>
+        <ul class="space-y-4">
+          @foreach (var feature in details.Features)
+          {
+            <CheckListItem Text="@feature" IconColor="@iconColor" />
+          }
+        </ul>
+      </ServiceFeatures>
+      <ServiceDetails>
+        <h3 class="text-2xl font-bold mb-4">@details.DetailsTitle</h3>
+        <ul class="list-disc pl-5 space-y-2">
+          @foreach (var step in details.Details)
+          {
+            <li>@step</li>
+          }
+        </ul>
+      </ServiceDetails>
+      <PackageSelector>
+        <h3 class="text-2xl font-bold mb-6 text-center text-gray-200">@details.PackagesTitle</h3>
+        <div class="space-y-4">
+          @foreach (var package in details.Packages)
+          {
+            var iconColorParts = iconColor.Split('-');
+            var colorName = iconColorParts.Length > 1 ? iconColorParts[1] : "gray";
+            var selectedBgClass = $"bg-{colorName}-700 shadow-lg";
+            var defaultBgClass = "bg-[#2d2d25]";
+            var hoverBgClass = $"hover:bg-{colorName}-600/40";
+            var selectedBorderClass = $"border-{colorName}-500 border-4";
+            var defaultBorderClass = "border-gray-700 border-2";
+            var hoverBorderClass = $"hover:{selectedBorderClass}";
 
-    <div class="mt-8">
-      <h3 class="text-2xl font-bold mb-4">Como funciona?</h3>
-      <ol class="list-decimal pl-5 space-y-2">
-        <li>Escolha o nível da chave e a quantidade de runs</li>
-        <li>Selecione as masmorras específicas ou deixe-nos escolher as mais rápidas</li>
-        <li>Informe detalhes do seu personagem e preferências de loot</li>
-        <li>Realize o pagamento</li>
-        <li>Agende com nossa equipe e receba seu boost!</li>
-      </ol>
-    </div>
-  </LeftContent>
-  <RightContent>
-    <PricingCard Title="Escolha seu pacote" HoverBorderColor="border-blue-500" OnAddToCart="@(() => Console.WriteLine("Add to cart"))" OnBuyNow="@(() => Console.WriteLine("Buy now"))">
-      <PricingOptions>
-        <PricingOption Title="Mythic+10 (Única)" Price="R$ 49,90" HoverBorderColor="border-blue-500" />
-        <PricingOption Title="Pacote 4x Mythic+15" Price="R$ 189,90" IsPopular="true" HoverBorderColor="border-blue-500" />
-        <PricingOption Title="Mythic+20 (Única)" Price="R$ 99,90" HoverBorderColor="border-blue-500" />
-      </PricingOptions>
-    </PricingCard>
-  </RightContent>
-</ServiceTemplate>
+            string packageClasses;
+            if (selectedPackage == package)
+            {
+                packageClasses = $"rounded-lg p-4 cursor-pointer transition {selectedBorderClass} {defaultBgClass}";
+            }
+            else
+            {
+                packageClasses = $"rounded-lg p-4 cursor-pointer transition {defaultBorderClass} {hoverBorderClass} {defaultBgClass} {hoverBgClass}";
+            }
+
+            <div
+              @key="package.Name"
+              @onclick="() => SelectPackage(package)"
+              class="@packageClasses">
+              <div class="flex justify-between items-center">
+                <div>
+                  <span class="font-bold text-gray-200">@package.Name</span>
+                </div>
+                <span class="text-xl font-bold text-gray-200">@package.Price</span>
+              </div>
+            </div>
+          }
+        </div>
+      </PackageSelector>
+      <ActionButtons>
+        <button
+          @onclick="AddToCart"
+          disabled="@(selectedPackage == null)"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 mb-4 disabled:opacity-50 disabled:cursor-not-allowed">
+          Adicionar ao Carrinho
+        </button>
+        <button
+          @onclick="BuyNow"
+          disabled="@(selectedPackage == null)"
+          class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+          Comprar Agora
+        </button>
+      </ActionButtons>
+    </ServiceTemplate>
+    <CartAddDialog 
+        IsVisible="@showCartDialog" 
+        Title="Item Adicionado ao Carrinho" 
+        Message="@cartDialogMessage" 
+        OnClose="CloseCartDialog" 
+        OnViewCart="GoToCart" />
+}
+
+@code {
+    private DungeonServiceDetails? details;
+    private Package? selectedPackage;
+    private string gradientClasses = "from-blue-600 to-indigo-800";
+    private string iconColor = "text-blue-500";
+    private string hoverBorderColor = "border-indigo-500";
+    private bool showCartDialog = false;
+    private string cartDialogMessage = "";
+    private CatalogServiceDetails? catalogService;
+
+    protected override async Task OnInitializedAsync()
+    {
+        details = await DungeonService.GetDungeonDetailsAsync();
+        
+        // Get catalog services to find the matching image
+        var services = await CatalogService.GetServicesAsync();
+        catalogService = services.FirstOrDefault(s => s.Title == "Mythic+ Dungeons");
+    }
+
+    private void SelectPackage(Package package)
+    {
+        selectedPackage = package;
+        StateHasChanged(); // Ensure UI updates to reflect selection
+    }
+
+    private void AddToCart()
+    {
+        if (selectedPackage == null || details == null) return;
+
+        var cartItem = new CartItemModel
+        {
+            // Use the proper image from catalog if available
+            ImageUrl = catalogService?.ImageUrl ?? "https://via.placeholder.com/80?text=Dungeon",
+            ImageAlt = $"{details.Title} - {selectedPackage.Name}",
+            Title = $"{details.Title} - {selectedPackage.Name}",
+            Description = selectedPackage.Name, // Or more details if available
+            UnitPrice = selectedPackage.Price,
+            Quantity = 1
+        };
+        CartService.AddItem(cartItem);
+        
+        // Show the dialog
+        cartDialogMessage = $"{selectedPackage.Name} foi adicionado ao seu carrinho!";
+        showCartDialog = true;
+        StateHasChanged();
+    }
+
+    private void BuyNow()
+    {
+        AddToCart(); // Add the item first
+        if (selectedPackage != null)
+        {
+             NavigationManager.NavigateTo("/cart");
+        }
+    }
+
+    private void CloseCartDialog()
+    {
+        showCartDialog = false;
+    }
+    
+    private void GoToCart()
+    {
+        NavigationManager.NavigateTo("/cart");
+    }
+}

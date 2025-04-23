@@ -1,0 +1,40 @@
+{
+  "title": "Itens Especiais",
+  "description": "Obtenha os itens mais raros e cobiçados do jogo. Armas legendárias, montarias raras, transmogs exclusivos e muito mais.",
+  "featuresTitle": "Categorias de Itens Disponíveis",
+  "features": [
+    "Montarias raras com chance de drop baixíssima",
+    "Transmogs exclusivos e itens cosméticos",
+    "Armas e equipamentos lendários",
+    "Pets de batalha raros",
+    "Itens de colecionador"
+  ],
+  "detailsTitle": "Nosso processo de farm",
+  "details": [
+    "Utilizamos equipes especializadas que trabalham incansavelmente para obter os itens mais raros do jogo. Alguns itens podem levar dias ou semanas para serem adquiridos devido à sua raridade.",
+    "Todos os itens são obtidos de forma legítima, seguindo as regras do jogo, garantindo a segurança de sua conta."
+  ],
+  "packagesTitle": "Itens em Destaque",
+  "packages": [
+    {
+      "name": "Montaria Rara - Rédeas do Raptor Zandalari",
+      "price": "R$ 199,90",
+      "isPopular": false
+    },
+    {
+      "name": "Montaria - Cabeça de Al'ar",
+      "price": "R$ 349,90",
+      "isPopular": true
+    },
+    {
+      "name": "Set de Transmog - Paladino T3",
+      "price": "R$ 299,90",
+      "isPopular": false
+    },
+    {
+      "name": "Pacote de 3 Pets Raros",
+      "price": "R$ 89,90",
+      "isPopular": false
+    }
+  ]
+}

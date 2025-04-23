@@ -1,3 +1,5 @@
+@implements IDisposable
+
 @code {
     [Parameter]
     public string Title { get; set; } = "Confirmação";
@@ -14,6 +16,32 @@
     [Parameter]
     public bool IsVisible { get; set; }
 
+    private bool isRendered = false;
+    private string dialogClasses => IsVisible 
+        ? "transform scale-100 opacity-100" 
+        : "transform scale-95 opacity-0";
+    private string backdropClasses => IsVisible 
+        ? "opacity-100" 
+        : "opacity-0";
+        private System.Threading.Timer? _timer;
+
+    protected override void OnParametersSet()
+    {
+        if (IsVisible)
+        {
+            isRendered = true;
+        }
+        else if (!IsVisible && isRendered)
+        {
+            DisposeTimer();
+            _timer = new System.Threading.Timer(_ => 
+            {
+                isRendered = false;
+                InvokeAsync(StateHasChanged);
+            }, null, 300, Timeout.Infinite);
+        }
+    }
+
     private async Task HandleConfirm()
     {
         await OnConfirm.InvokeAsync();
@@ -23,26 +51,52 @@
     {
         await OnCancel.InvokeAsync();
     }
+    
+    private void DisposeTimer()
+    {
+        _timer?.Dispose();
+        _timer = null;
+    }
+    
+    public void Dispose()
+    {
+        DisposeTimer();
+    }
 }
 
-@if (IsVisible)
+@if (isRendered)
 {
     <div class="fixed inset-0 z-50 flex items-center justify-center" @onclick="HandleCancel">
-        <div class="absolute inset-0 backdrop-blur-sm bg-gray-700/30"></div>
+        <div class="absolute inset-0 backdrop-blur-sm bg-black/50 transition-opacity duration-300 @backdropClasses"></div>
         
-        <div class="relative bg-white rounded-lg p-8 w-full max-w-lg shadow-2xl border border-gray-200 z-10"
+        <div class="relative bg-[#2d2d25] text-gray-200 rounded-lg p-8 w-full max-w-lg mx-auto shadow-2xl border border-gray-700 z-10 transition-all duration-300 ease-out @dialogClasses"
              @onclick:stopPropagation>
-            <h3 class="text-xl font-bold mb-3">@Title</h3>
-            <p class="mb-6 text-gray-700">@Message</p>
+            <div class="absolute top-4 right-4">
+                <button @onclick="HandleCancel" class="text-gray-400 hover:text-gray-200 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="flex items-center mb-4 text-red-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                <h3 class="text-xl font-bold">@Title</h3>
+            </div>
+            
+            <p class="mb-8 text-gray-300">@Message</p>
+            
             <div class="flex justify-end space-x-3">
                 <button 
                     @onclick="HandleCancel" 
-                    class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition cursor-pointer">
+                    class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500">
                     Cancelar
                 </button>
                 <button 
                     @onclick="HandleConfirm" 
-                    class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition cursor-pointer">
+                    class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 shadow-lg hover:shadow-red-500/30">
                     Confirmar
                 </button>
             </div>

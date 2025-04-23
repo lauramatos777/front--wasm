@@ -17,10 +17,16 @@
     public string HoverBorderColor { get; set; } = "border-blue-500";
 
     [Parameter]
-    public RenderFragment? LeftContent { get; set; }
+    public RenderFragment? ServiceFeatures { get; set; }
 
     [Parameter]
-    public RenderFragment? RightContent { get; set; }
+    public RenderFragment? ServiceDetails { get; set; }
+
+    [Parameter]
+    public RenderFragment? PackageSelector { get; set; }
+
+    [Parameter]
+    public RenderFragment? ActionButtons { get; set; }
 }
 
 <div class="bg-gradient-to-r @GradientClasses py-16">
@@ -33,12 +39,24 @@
 </div>
 
 <div class="container mx-auto px-4 py-12">
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
     <div>
-      @LeftContent
+      @ServiceFeatures
+      @if (ServiceDetails != null)
+      {
+        <div class="mt-8">
+          @ServiceDetails
+        </div>
+      }
     </div>
-    <div>
-      @RightContent
+    <div class="bg-[#2d2d25] rounded-lg shadow-lg p-8 border border-gray-700">
+      @PackageSelector
+      @if (ActionButtons != null)
+      {
+        <div class="mt-8">
+          @ActionButtons
+        </div>
+      }
     </div>
   </div>
 </div>

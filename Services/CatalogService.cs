@@ -15,21 +15,21 @@ namespace front__wasm.Services
       _logger = logger;
     }
 
-    public async Task<IEnumerable<Service>> GetServicesAsync()
+    public async Task<IEnumerable<CatalogServiceDetails>> GetServicesAsync()
     {
       try
       {
-        var services = await _httpClient.GetFromJsonAsync<IEnumerable<Service>>("data/services.json");
+        var services = await _httpClient.GetFromJsonAsync<IEnumerable<CatalogServiceDetails>>("data/services.json");
 
         _logger?.LogInformation($"Loaded {services?.Count() ?? 0} services");
 
-        return services ?? new List<Service>();
+        return services ?? new List<CatalogServiceDetails>();
       }
       catch (Exception ex)
       {
         _logger?.LogError(ex, "Erro ao carregar serviços: {Message}", ex.Message);
         Console.WriteLine($"Error loading services: {ex.Message}");
-        return new List<Service>();
+        return new List<CatalogServiceDetails>();
       }
     }
   }

@@ -1,130 +1,166 @@
 @page "/pvp"
+@using front__wasm.Models
+@using front__wasm.Services
+@inject PvpService PvpService
+@inject CartService CartService
+@inject NavigationManager NavigationManager
+@using front__wasm.Shared
+@inject CatalogService CatalogService
 
-<ServiceTemplate 
-  Title="Serviços de PvP" 
-  Description="Alcance ratings elevados, conquiste títulos exclusivos e obtenha equipamentos PvP de elite com nossos serviços profissionais de arena e battleground."
-  GradientClasses="from-red-700 to-red-900">
-  <LeftContent>
-    <h2 class="text-3xl font-bold mb-6">Eleve seu jogo PvP com nossos serviços</h2>
-    <ul class="space-y-4">
-      <li class="flex items-start">
-        <svg
-          class="h-6 w-6 text-red-600 mr-2"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M5 13l4 4L19 7" />
-        </svg>
-        <span>Jogadores Gladiadores e R1 em nosso time</span>
-      </li>
-      <li class="flex items-start">
-        <svg
-          class="h-6 w-6 text-red-600 mr-2"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M5 13l4 4L19 7" />
-        </svg>
-        <span>Disponível para 2v2, 3v3 e RBGs</span>
-      </li>
-      <li class="flex items-start">
-        <svg
-          class="h-6 w-6 text-red-600 mr-2"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M5 13l4 4L19 7" />
-        </svg>
-        <span>Conquistas como "Gladiador" e "Elite" garantidas</span>
-      </li>
-      <li class="flex items-start">
-        <svg
-          class="h-6 w-6 text-red-600 mr-2"
-          fill="none"
-          viewBox="0 24 24"
-          stroke="currentColor">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M5 13l4 4L19 7" />
-        </svg>
-        <span>Opções para jogabilidade própria (coaching) ou pilotagem</span>
-      </li>
-    </ul>
+@if (details == null)
+{
+    <p class="text-center text-white py-10">Carregando detalhes do serviço...</p>
+}
+else
+{
+    <ServiceTemplate 
+      Title="@details.Title" 
+      Description="@details.Description"
+      GradientClasses="@gradientClasses"
+      IconColor="@iconColor"
+      HoverBorderColor="@hoverBorderColor">
+      <ServiceFeatures>
+        <h2 class="text-3xl font-bold mb-6">@details.FeaturesTitle</h2>
+        <ul class="space-y-4">
+          @foreach (var feature in details.Features)
+          {
+            <CheckListItem Text="@feature" IconColor="@iconColor" />
+          }
+        </ul>
+      </ServiceFeatures>
+      <ServiceDetails>
+        <h3 class="text-2xl font-bold mb-4">@details.DetailsTitle</h3>
+        <ul class="space-y-2">
+          @foreach (var detail in details.Details)
+          {
+            <li>@detail</li>
+          }
+        </ul>
+      </ServiceDetails>
+      <PackageSelector>
+        <h3 class="text-2xl font-bold mb-6 text-center text-gray-200">@details.PackagesTitle</h3>
+        <div class="space-y-4">
+          @foreach (var package in details.Packages)
+          {
+            var iconColorParts = iconColor.Split('-');
+            var colorName = iconColorParts.Length > 1 ? iconColorParts[1] : "gray";
+            var selectedBgClass = $"bg-{colorName}-700 shadow-lg";
+            var defaultBgClass = "bg-[#2d2d25]";
+            var hoverBgClass = $"hover:bg-{colorName}-600/40";
+            var selectedBorderClass = $"border-{colorName}-500 border-4";
+            var defaultBorderClass = "border-gray-700 border-2";
+            var hoverBorderClass = $"hover:{selectedBorderClass}";
 
-    <div class="mt-8">
-      <h3 class="text-2xl font-bold mb-4">Nossos diferenciais</h3>
-      <p class="mb-4">
-        Oferecemos gravações das partidas para você estudar e aprender com os melhores jogadores.
-        Também disponibilizamos sessões de coaching para melhorar suas habilidades PvP.
-      </p>
-      <p>
-        Todos os boosts são realizados manualmente, sem uso de programas ou trapaças, garantindo
-        total segurança para sua conta.
-      </p>
-    </div>
-  </LeftContent>
-  <RightContent>
-    <div class="bg-white rounded-lg shadow-lg p-8 border border-gray-200">
-      <h3 class="text-2xl font-bold mb-6 text-center">Escolha seu pacote</h3>
-      <div class="space-y-4">
-        <div
-          class="border border-gray-200 rounded-lg p-4 hover:border-red-500 cursor-pointer transition">
-          <div class="flex justify-between items-center">
-            <span class="font-bold">1800 Rating (2v2 ou 3v3)</span>
-            <span class="text-xl font-bold">R$ 149,90</span>
-          </div>
-        </div>
-        <div
-          class="border border-gray-200 rounded-lg p-4 hover:border-red-500 cursor-pointer transition bg-red-50">
-          <div class="flex justify-between items-center">
-            <div>
-              <span class="font-bold">2100 Rating (Elite)</span>
-              <span class="bg-green-500 text-white text-xs px-2 py-1 rounded-full ml-2"
-                >Mais Popular</span
-              >
+            string packageClasses;
+            if (selectedPackage == package)
+            {
+                packageClasses = $"rounded-lg p-4 cursor-pointer transition {selectedBorderClass} {selectedBgClass}";
+            }
+            else
+            {
+                packageClasses = $"rounded-lg p-4 cursor-pointer transition {defaultBorderClass} {hoverBorderClass} {defaultBgClass} {hoverBgClass}";
+            }
+
+            <div
+              @onclick="() => SelectPackage(package)"
+              class="@packageClasses">
+              <div class="flex justify-between items-center">
+                <div>
+                  <span class="font-bold text-gray-200">@package.Name</span>
+                </div>
+                <span class="text-xl font-bold text-gray-200">@package.Price</span>
+              </div>
             </div>
-            <span class="text-xl font-bold">R$ 299,90</span>
-          </div>
+          }
         </div>
-        <div
-          class="border border-gray-200 rounded-lg p-4 hover:border-red-500 cursor-pointer transition">
-          <div class="flex justify-between items-center">
-            <span class="font-bold">2400+ (Gladiador)</span>
-            <span class="text-xl font-bold">R$ 499,90</span>
-          </div>
-        </div>
-        <div
-          class="border border-gray-200 rounded-lg p-4 hover:border-red-500 cursor-pointer transition">
-          <div class="flex justify-between items-center">
-            <span class="font-bold">RBG 1800+ Rating</span>
-            <span class="text-xl font-bold">R$ 249,90</span>
-          </div>
-        </div>
-      </div>
-      <div class="mt-8">
+      </PackageSelector>
+      <ActionButtons>
         <button
-          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 mb-4">
+          @onclick="AddToCart"
+          disabled="@(selectedPackage == null)"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 mb-4 disabled:opacity-50 disabled:cursor-not-allowed">
           Adicionar ao Carrinho
         </button>
         <button
-          class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300">
+          @onclick="BuyNow"
+          disabled="@(selectedPackage == null)"
+          class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
           Comprar Agora
         </button>
-      </div>
-    </div>
-  </RightContent>
-</ServiceTemplate>
+      </ActionButtons>
+    </ServiceTemplate>
+}
+
+<CartAddDialog 
+    IsVisible="@showCartDialog" 
+    Title="Item Adicionado ao Carrinho" 
+    Message="@cartDialogMessage" 
+    OnClose="CloseCartDialog" 
+    OnViewCart="GoToCart" />
+
+@code {
+    private PvpServiceDetails? details;
+    private Package? selectedPackage;
+
+    private string gradientClasses = "from-red-700 to-red-900";
+    private string iconColor = "text-red-600";
+    private string hoverBorderColor = "border-red-500";
+
+    private bool showCartDialog = false;
+    private string cartDialogMessage = "";
+
+    private CatalogServiceDetails? catalogService;
+
+    protected override async Task OnInitializedAsync()
+    {
+        details = await PvpService.GetPvpDetailsAsync();
+        
+        var services = await CatalogService.GetServicesAsync();
+        catalogService = services.FirstOrDefault(s => s.Title == "Serviços de PvP");
+    }
+
+    private void SelectPackage(Package package)
+    {
+        selectedPackage = package;
+        StateHasChanged();
+    }
+
+    private void AddToCart()
+    {
+        if (selectedPackage == null || details == null) return;
+
+        var cartItem = new CartItemModel
+        {
+            ImageUrl = catalogService?.ImageUrl,
+            ImageAlt = $"{details.Title} - {selectedPackage.Name}",
+            Title = $"{details.Title} - {selectedPackage.Name}",
+            Description = selectedPackage.Name, 
+            UnitPrice = selectedPackage.Price,
+            Quantity = 1
+        };
+        CartService.AddItem(cartItem);
+        
+        cartDialogMessage = $"{selectedPackage.Name} foi adicionado ao seu carrinho!";
+        showCartDialog = true;
+        StateHasChanged();
+    }
+
+    private void BuyNow()
+    {
+        AddToCart(); 
+        if (selectedPackage != null)
+        {
+             NavigationManager.NavigateTo("/cart");
+        }
+    }
+
+    private void CloseCartDialog()
+    {
+        showCartDialog = false;
+    }
+    
+    private void GoToCart()
+    {
+        NavigationManager.NavigateTo("/cart");
+    }
+}

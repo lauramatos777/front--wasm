@@ -1,6 +1,6 @@
 [
   {
-    "imageUrl": "https://via.placeholder.com/600x300?text=Gold+Services",
+    "imageUrl": "images/gold-services.png",
     "imageAlt": "Gold Services",
     "title": "Gold Services",
     "description": "Adquira ouro rapidamente para suas necessidades no jogo.",
@@ -8,7 +8,7 @@
     "detailsUrl": "/gold"
   },
   {
-    "imageUrl": "https://via.placeholder.com/600x300?text=Dungeon+Runs",
+    "imageUrl": "images/mythic-plus.png",
     "imageAlt": "Dungeon Runs",
     "title": "Mythic+ Dungeons",
     "description": "Complete desafios de masmorras com nossa equipe experiente.",
@@ -16,7 +16,7 @@
     "detailsUrl": "/dungeons"
   },
   {
-    "imageUrl": "https://via.placeholder.com/600x300?text=Raid+Boosting",
+    "imageUrl": "images/raid-boosting.png",
     "imageAlt": "Raid Boosting",
     "title": "Raid Boosting",
     "description": "Conquiste as raids mais desafiadoras com nossa ajuda.",
@@ -24,7 +24,7 @@
     "detailsUrl": "/raids"
   },
   {
-    "imageUrl": "https://via.placeholder.com/600x300?text=PvP+Services",
+    "imageUrl": "images/pvp-services.png",
     "imageAlt": "PvP Services",
     "title": "Serviços de PvP",
     "description": "Alcance ratings elevados e conquiste títulos exclusivos.",
@@ -32,7 +32,7 @@
     "detailsUrl": "/pvp"
   },
   {
-    "imageUrl": "https://via.placeholder.com/600x300?text=Special+Items",
+    "imageUrl": "images/special-itens.png",
     "imageAlt": "Special Items",
     "title": "Itens Especiais",
     "description": "Obtenha montarias raras, transmogs e itens exclusivos.",

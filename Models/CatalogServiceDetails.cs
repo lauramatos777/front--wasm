@@ -1,6 +1,6 @@
 namespace front__wasm.Models
 {
-  public class Service
+  public class CatalogServiceDetails
   {
     public string? ImageUrl { get; set; }
     public string? ImageAlt { get; set; }

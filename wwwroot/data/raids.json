@@ -1,0 +1,41 @@
+{
+  "title": "Raid Boosting",
+  "description": "Conquiste as raids mais desafiadoras e garanta os melhores equipamentos com nossa equipe de elite. Do Normal ao Mítico, nós te levamos ao topo.",
+  "featuresTitle": "Por que escolher nosso boost de raids?",
+  "features": [
+    "Equipe composta por raiders de guilds de top mundial",
+    "Garantia de loot específico para seu personagem",
+    "Disponibilidade para todas as dificuldades: Normal, Heroico e Mítico",
+    "Conquistas e montarias raras garantidas"
+  ],
+  "detailsTitle": "Raids disponíveis:",
+  "details": [
+    "Aberrus, o Crisol Sombreado (Última temporada)",
+    "Cofre das Encarnações",
+    "Sepulcro dos Fundadores",
+    "Outras raids sob consulta"
+  ],
+  "packagesTitle": "Escolha seu pacote",
+  "packages": [
+    {
+      "name": "Full Run Normal",
+      "price": "R$ 89,90",
+      "isPopular": false
+    },
+    {
+      "name": "Full Run Heroico",
+      "price": "R$ 199,90",
+      "isPopular": true
+    },
+    {
+      "name": "Boss Específico Mítico",
+      "price": "R$ 129,90",
+      "isPopular": false
+    },
+    {
+      "name": "Full Run Mítico",
+      "price": "R$ 599,90",
+      "isPopular": false
+    }
+  ]
+}

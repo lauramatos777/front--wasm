@@ -1,145 +1,165 @@
 @page "/itens"
+@using front__wasm.Models
+@using front__wasm.Services
+@inject ItemService ItemService
+@inject CartService CartService
+@inject NavigationManager NavigationManager
+@inject CatalogService CatalogService
+@using front__wasm.Shared
 
-<ServiceTemplate 
-  Title="Itens Especiais" 
-  Description="Obtenha os itens mais raros e cobiçados do jogo. Armas legendárias, montarias raras, transmogs exclusivos e muito mais."
-  GradientClasses="from-green-700 to-teal-600">
-  <LeftContent>
-    <h2 class="text-3xl font-bold mb-6">Categorias de Itens Disponíveis</h2>
-    <ul class="space-y-4">
-      <li class="flex items-start">
-        <svg
-          class="h-6 w-6 text-green-600 mr-2"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M5 13l4 4L19 7" />
-        </svg>
-        <span>Montarias raras com chance de drop baixíssima</span>
-      </li>
-      <li class="flex items-start">
-        <svg
-          class="h-6 w-6 text-green-600 mr-2"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M5 13l4 4L19 7" />
-        </svg>
-        <span>Transmogs exclusivos e itens cosméticos</span>
-      </li>
-      <li class="flex items-start">
-        <svg
-          class="h-6 w-6 text-green-600 mr-2"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M5 13l4 4L19 7" />
-        </svg>
-        <span>Armas e equipamentos lendários</span>
-      </li>
-      <li class="flex items-start">
-        <svg
-          class="h-6 w-6 text-green-600 mr-2"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M5 13l4 4L19 7" />
-        </svg>
-        <span>Pets de batalha raros</span>
-      </li>
-      <li class="flex items-start">
-        <svg
-          class="h-6 w-6 text-green-600 mr-2"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M5 13l4 4L19 7" />
-        </svg>
-        <span>Itens de colecionador</span>
-      </li>
-    </ul>
+@if (details == null)
+{
+    <p class="text-center text-white py-10">Carregando detalhes do serviço...</p>
+}
+else
+{
+    <ServiceTemplate 
+      Title="@details.Title" 
+      Description="@details.Description"
+      GradientClasses="@gradientClasses"
+      IconColor="@iconColor"
+      HoverBorderColor="@hoverBorderColor">
+      <ServiceFeatures>
+        <h2 class="text-3xl font-bold mb-6">@details.FeaturesTitle</h2>
+        <ul class="space-y-4">
+          @foreach (var category in details.Features)
+          {
+            <CheckListItem Text="@category" IconColor="@iconColor" />
+          }
+        </ul>
+      </ServiceFeatures>
+      <ServiceDetails>
+        <h3 class="text-2xl font-bold mb-4">@details.DetailsTitle</h3>
+        <ul class="space-y-2">
+          @foreach (var detail in details.Details)
+          {
+            <li>@detail</li>
+          }
+        </ul>
+      </ServiceDetails>
+      <PackageSelector>
+        <h3 class="text-2xl font-bold mb-6 text-center text-gray-200">@details.PackagesTitle</h3>
+        <div class="space-y-4">
+          @foreach (var package in details.Packages)
+          {
+              var iconColorParts = iconColor.Split('-');
+              var colorName = iconColorParts.Length > 1 ? iconColorParts[1] : "gray";
+              var selectedBgClass = $"bg-{colorName}-700 shadow-lg";
+              var defaultBgClass = "bg-[#2d2d25]";
+              var hoverBgClass = $"hover:bg-{colorName}-600/40";
+              var selectedBorderClass = $"border-{colorName}-500 border-4";
+              var defaultBorderClass = "border-gray-700 border-2";
+              var hoverBorderClass = $"hover:{selectedBorderClass}";
 
-    <div class="mt-8">
-      <h3 class="text-2xl font-bold mb-4">Nosso processo de farm</h3>
-      <p class="mb-4">
-        Utilizamos equipes especializadas que trabalham incansavelmente para obter os itens mais
-        raros do jogo. Alguns itens podem levar dias ou semanas para serem adquiridos devido à sua
-        raridade.
-      </p>
-      <p>
-        Todos os itens são obtidos de forma legítima, seguindo as regras do jogo, garantindo a
-        segurança de sua conta.
-      </p>
-    </div>
-  </LeftContent>
-  <RightContent>
-    <div class="bg-white rounded-lg shadow-lg p-8 border border-gray-200">
-      <h3 class="text-2xl font-bold mb-6 text-center">Itens em Destaque</h3>
-      <div class="space-y-4">
-        <div
-          class="border border-gray-200 rounded-lg p-4 hover:border-green-500 cursor-pointer transition">
-          <div class="flex justify-between items-center">
-            <span class="font-bold">Montaria Rara - Rédeas do Raptor Zandalari</span>
-            <span class="text-xl font-bold">R$ 199,90</span>
-          </div>
+              string packageClasses;
+              if (selectedPackage == package)
+              {
+                  packageClasses = $"rounded-lg p-4 cursor-pointer transition {selectedBorderClass} {selectedBgClass}";
+              }
+              else
+              {
+                  packageClasses = $"rounded-lg p-4 cursor-pointer transition {defaultBorderClass} {hoverBorderClass} {defaultBgClass} {hoverBgClass}";
+              }
+
+              <div
+                @onclick="() => SelectPackage(package)"
+                class="@packageClasses">
+                <div class="flex justify-between items-center">
+                  <div>
+                    <span class="font-bold text-gray-200">@package.Name</span>
+                  </div>
+                  <span class="text-xl font-bold text-gray-200">@package.Price</span>
+                </div>
+              </div>
+          }
         </div>
-        <div
-          class="border border-gray-200 rounded-lg p-4 hover:border-green-500 cursor-pointer transition bg-green-50">
-          <div class="flex justify-between items-center">
-            <div>
-              <span class="font-bold">Montaria - Cabeça de Al'ar</span>
-              <span class="bg-green-500 text-white text-xs px-2 py-1 rounded-full ml-2"
-                >Mais Popular</span
-              >
-            </div>
-            <span class="text-xl font-bold">R$ 349,90</span>
-          </div>
+      </PackageSelector>
+      <ActionButtons>
+        <div class="flex flex-col items-center gap-4">
+          <button
+            @onclick="AddToCart"
+            disabled="@(selectedPackage == null)"
+            class="w-3/4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+            Adicionar ao Carrinho
+          </button>
+          <button
+            @onclick="BuyNow"
+            disabled="@(selectedPackage == null)"
+            class="w-3/4 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+            Comprar Agora
+          </button>
         </div>
-        <div
-          class="border border-gray-200 rounded-lg p-4 hover:border-green-500 cursor-pointer transition">
-          <div class="flex justify-between items-center">
-            <span class="font-bold">Set de Transmog - Paladino T3</span>
-            <span class="text-xl font-bold">R$ 299,90</span>
-          </div>
-        </div>
-        <div
-          class="border border-gray-200 rounded-lg p-4 hover:border-green-500 cursor-pointer transition">
-          <div class="flex justify-between items-center">
-            <span class="font-bold">Pacote de 3 Pets Raros</span>
-            <span class="text-xl font-bold">R$ 89,90</span>
-          </div>
-        </div>
-      </div>
-      <div class="mt-8">
-        <button
-          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 mb-4">
-          Adicionar ao Carrinho
-        </button>
-        <button
-          class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300">
-          Comprar Agora
-        </button>
-      </div>
-    </div>
-  </RightContent>
-</ServiceTemplate>
+      </ActionButtons>
+    </ServiceTemplate>
+}
+
+<CartAddDialog 
+    IsVisible="@showCartDialog" 
+    Title="Item Adicionado ao Carrinho" 
+    Message="@cartDialogMessage" 
+    OnClose="CloseCartDialog" 
+    OnViewCart="GoToCart" />
+
+@code {
+    private ItemServiceDetails? details;
+    private Package? selectedPackage;
+    private string gradientClasses = "from-green-700 to-teal-600";
+    private string iconColor = "text-green-600";
+    private string hoverBorderColor = "border-green-500";
+    private bool showCartDialog = false;
+    private string cartDialogMessage = "";
+    private CatalogServiceDetails? catalogService;
+
+    protected override async Task OnInitializedAsync()
+    {
+        details = await ItemService.GetItemDetailsAsync();
+        
+        var services = await CatalogService.GetServicesAsync();
+        catalogService = services.FirstOrDefault(s => s.Title == "Itens Especiais");
+    }
+
+    private void SelectPackage(Package package)
+    {
+        selectedPackage = package;
+        StateHasChanged();
+    }
+
+    private void AddToCart()
+    {
+        if (selectedPackage == null || details == null) return;
+
+        var cartItem = new CartItemModel
+        {
+            ImageUrl = catalogService?.ImageUrl,
+            ImageAlt = $"{details.Title} - {selectedPackage.Name}",
+            Title = $"{details.Title} - {selectedPackage.Name}",
+            Description = selectedPackage.Name, 
+            UnitPrice = selectedPackage.Price,
+            Quantity = 1
+        };
+        CartService.AddItem(cartItem);
+        
+        cartDialogMessage = $"{selectedPackage.Name} foi adicionado ao seu carrinho!";
+        showCartDialog = true;
+        StateHasChanged();
+    }
+
+    private void CloseCartDialog()
+    {
+        showCartDialog = false;
+    }
+
+    private void GoToCart()
+    {
+        NavigationManager.NavigateTo("/cart");
+    }
+
+    private void BuyNow()
+    {
+        AddToCart();
+        if (selectedPackage != null)
+        {
+            NavigationManager.NavigateTo("/cart");
+        }
+    }
+}

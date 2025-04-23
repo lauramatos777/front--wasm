@@ -1,7 +1,7 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   margin: 0;
   padding: 0;
   min-height: 100vh;
@@ -13,39 +13,5 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Special Gothic Condensed One', sans-serif;
-}
-
-.backdrop-blur-lg {
-  backdrop-filter: blur(8px);
-}
-
-.animate-bounce {
-  animation: bounce 1.5s infinite;
-}
-
-@keyframes bounce {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-25px);
-  }
-}
-
-/* Adiciona transições suaves */
-.transition {
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 300ms;
-}
-
-.hover\:scale-105:hover {
-  transform: scale(1.05);
-}
-
-/* Estilos para os cards e botões */
-.shadow-lg {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  font-family: "Special Gothic Condensed One", sans-serif;
 }
